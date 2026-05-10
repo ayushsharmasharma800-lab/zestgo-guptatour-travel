@@ -1,0 +1,1316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ZestGo — Short Distance Tours & Travels</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --sand: #F5EFE0;
+    --deep: #1A2B2F;
+    --moss: #3D6B4F;
+    --terracotta: #C4573A;
+    --cream: #FBF7EF;
+    --muted: #7A8A85;
+    --gold: #D4A843;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--cream);
+    color: var(--deep);
+    overflow-x: hidden;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 1.2rem 4rem;
+    background: rgba(251,247,239,0.95);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(26,43,47,0.08);
+  }
+  .logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--deep);
+    letter-spacing: -0.5px;
+    flex-shrink: 0;
+  }
+  .logo span { color: var(--moss); }
+  .nav-assoc {
+    font-size: 0.78rem;
+    color: var(--muted);
+    text-align: center;
+    flex: 1;
+    padding: 0 1rem;
+  }
+  nav ul { list-style: none; display: flex; gap: 2.5rem; }
+  nav ul a {
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--muted);
+    letter-spacing: 0.3px;
+    transition: color 0.2s;
+  }
+  nav ul a:hover { color: var(--deep); }
+  .nav-cta {
+    background: var(--moss);
+    color: white !important;
+    padding: 0.6rem 1.4rem;
+    border-radius: 2rem;
+    transition: background 0.2s !important;
+    white-space: nowrap;
+  }
+  .nav-cta:hover { background: var(--deep) !important; color: white !important; }
+
+  /* Hamburger */
+  .nav-hamburger {
+    display: none;
+    flex-direction: column;
+    gap: 5px;
+    cursor: pointer;
+    padding: 4px;
+    background: none;
+    border: none;
+    z-index: 200;
+  }
+  .nav-hamburger span {
+    display: block;
+    width: 24px;
+    height: 2px;
+    background: var(--deep);
+    border-radius: 2px;
+    transition: all 0.3s;
+  }
+  .nav-hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+  .nav-hamburger.open span:nth-child(2) { opacity: 0; }
+  .nav-hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+  /* Mobile nav drawer */
+  .mobile-menu {
+    display: none;
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(251,247,239,0.98);
+    backdrop-filter: blur(16px);
+    z-index: 99;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 2rem;
+  }
+  .mobile-menu.open { display: flex; }
+  .mobile-menu a {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--deep);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  .mobile-menu a:hover { color: var(--moss); }
+  .mobile-menu .m-cta {
+    background: var(--moss);
+    color: white !important;
+    font-size: 1.2rem;
+    padding: 0.8rem 2.5rem;
+    border-radius: 2rem;
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 500;
+  }
+
+  /* ── HERO ── */
+  .hero {
+    min-height: 100vh;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    padding-top: 80px;
+  }
+  .hero-left {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 5rem 3rem 5rem 4rem;
+  }
+  .hero-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--sand);
+    border: 1px solid rgba(61,107,79,0.2);
+    color: var(--moss);
+    font-size: 0.8rem;
+    font-weight: 500;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    padding: 0.4rem 1rem;
+    border-radius: 2rem;
+    margin-bottom: 2rem;
+    width: fit-content;
+  }
+  .hero-tag::before { content: '●'; font-size: 0.5rem; }
+  .hero h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2.2rem, 5vw, 4.5rem);
+    line-height: 1.1;
+    font-weight: 700;
+    color: var(--deep);
+    margin-bottom: 1.5rem;
+  }
+  .hero h1 em { font-style: italic; color: var(--moss); }
+  .hero-desc {
+    font-size: 1.05rem;
+    color: var(--muted);
+    line-height: 1.7;
+    max-width: 420px;
+    margin-bottom: 2.5rem;
+  }
+  .hero-btns { display: flex; gap: 1rem; align-items: center; flex-wrap: wrap; }
+  .btn-primary {
+    background: var(--deep);
+    color: white;
+    padding: 0.9rem 2rem;
+    border-radius: 2rem;
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 0.95rem;
+    transition: background 0.2s, transform 0.1s;
+    display: inline-block;
+  }
+  .btn-primary:hover { background: var(--moss); transform: translateY(-1px); }
+  .btn-outline {
+    color: var(--deep);
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 0.95rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: gap 0.2s;
+  }
+  .btn-outline:hover { gap: 14px; }
+  .btn-outline::after { content: '→'; }
+
+  .hero-stats {
+    display: flex;
+    gap: 2.5rem;
+    margin-top: 3.5rem;
+    padding-top: 2.5rem;
+    border-top: 1px solid rgba(26,43,47,0.1);
+    flex-wrap: wrap;
+  }
+  .stat-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--deep);
+  }
+  .stat-label {
+    font-size: 0.8rem;
+    color: var(--muted);
+    letter-spacing: 0.3px;
+    margin-top: 2px;
+  }
+
+  .hero-right {
+    position: relative;
+    background: var(--sand);
+    overflow: hidden;
+  }
+  .hero-map {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0.15;
+  }
+  .map-overlay {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .floating-car {
+    animation: float 3.5s ease-in-out infinite;
+    filter: drop-shadow(0 16px 32px rgba(26,43,47,0.2));
+  }
+  @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-10px)} }
+
+  /* ── SECTIONS ── */
+  .section { padding: 6rem 4rem; }
+  .section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom: 3rem;
+  }
+  .section-label {
+    font-size: 0.75rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--terracotta);
+    font-weight: 500;
+    margin-bottom: 0.6rem;
+  }
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.8rem, 3vw, 2.8rem);
+    font-weight: 700;
+    color: var(--deep);
+    line-height: 1.2;
+  }
+  .section-link {
+    color: var(--moss);
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 0.9rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    border-bottom: 1px solid var(--moss);
+    padding-bottom: 2px;
+    white-space: nowrap;
+  }
+
+  /* ── DESTINATIONS ── */
+  .destinations-grid {
+    display: grid;
+    grid-template-columns: 1.4fr 1fr 1fr;
+    gap: 1.5rem;
+  }
+  .dest-card {
+    border-radius: 1.2rem;
+    overflow: hidden;
+    position: relative;
+    cursor: pointer;
+    transition: transform 0.3s;
+  }
+  .dest-card:hover { transform: translateY(-4px); }
+  .dest-card.tall { grid-row: span 2; }
+  .dest-bg {
+    width: 100%;
+    height: 100%;
+    min-height: 200px;
+    display: flex;
+    align-items: flex-end;
+    padding: 1.5rem;
+    position: relative;
+  }
+  .dest-1 { background: linear-gradient(160deg, #4A7B8E 0%, #1A3A4A 100%); min-height: 460px; }
+  .dest-2 { background: linear-gradient(160deg, #7B9B6E 0%, #2D4A30 100%); min-height: 220px; }
+  .dest-3 { background: linear-gradient(160deg, #C4A052 0%, #5C3D12 100%); min-height: 220px; }
+  .dest-scenery {
+    position: absolute; inset: 0;
+    opacity: 0.25;
+    font-size: 8rem;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .dest-info { position: relative; color: white; }
+  .dest-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.4rem;
+    font-weight: 700;
+    margin-bottom: 4px;
+  }
+  .dest-dist { font-size: 0.82rem; opacity: 0.75; margin-bottom: 0.8rem; }
+  .dest-badge {
+    display: inline-block;
+    background: rgba(255,255,255,0.2);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255,255,255,0.3);
+    color: white;
+    font-size: 0.78rem;
+    padding: 0.3rem 0.8rem;
+    border-radius: 2rem;
+  }
+
+  /* ── PACKAGES / FLEET ── */
+  .packages-section { background: var(--deep); color: white; }
+  .packages-section .section-title { color: white; }
+  .packages-section .section-label { color: var(--gold); }
+  .packages-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+  }
+  .pkg-card {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 1.2rem;
+    padding: 2rem;
+    transition: background 0.2s, border-color 0.2s;
+    position: relative;
+  }
+  .pkg-card:hover { background: rgba(255,255,255,0.09); border-color: rgba(255,255,255,0.2); }
+  .pkg-card.featured { background: var(--moss); border-color: var(--moss); }
+  .pkg-icon {
+    width: 48px; height: 48px;
+    border-radius: 0.8rem;
+    background: rgba(255,255,255,0.12);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.4rem;
+    margin-bottom: 1.5rem;
+  }
+  .pkg-card.featured .pkg-icon { background: rgba(255,255,255,0.2); }
+  .pkg-name { font-family: 'Playfair Display', serif; font-size: 1.3rem; font-weight: 700; margin-bottom: 0.5rem; }
+  .pkg-desc { font-size: 0.88rem; opacity: 0.65; line-height: 1.6; margin-bottom: 1.5rem; }
+  .pkg-features { list-style: none; margin-bottom: 2rem; }
+  .pkg-features li {
+    font-size: 0.85rem; opacity: 0.8; padding: 0.4rem 0;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .pkg-features li::before { content: '✓'; color: var(--gold); font-weight: 700; flex-shrink: 0; }
+  .pkg-card.featured .pkg-features li::before { color: var(--sand); }
+  .pkg-price { font-family: 'Playfair Display', serif; font-size: 1.8rem; font-weight: 700; margin-bottom: 1rem; }
+  .pkg-price span { font-size: 0.9rem; font-weight: 400; opacity: 0.6; font-family: 'DM Sans', sans-serif; }
+  .pkg-btn {
+    display: block; text-align: center; padding: 0.85rem; border-radius: 2rem;
+    text-decoration: none; font-weight: 500; font-size: 0.9rem;
+    background: rgba(255,255,255,0.12); color: white;
+    border: 1px solid rgba(255,255,255,0.2); transition: background 0.2s;
+  }
+  .pkg-btn:hover { background: rgba(255,255,255,0.2); }
+  .pkg-card.featured .pkg-btn { background: white; color: var(--moss); border-color: white; }
+  .pkg-card.featured .pkg-btn:hover { background: var(--sand); }
+  .vehicle-svg { margin-bottom: 1.2rem; opacity: 0.9; }
+
+  /* ── HOW IT WORKS ── */
+  .steps-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 2rem;
+    position: relative;
+  }
+  .steps-grid::before {
+    content: '';
+    position: absolute;
+    top: 28px; left: 60px; right: 60px;
+    height: 2px;
+    background: repeating-linear-gradient(90deg, var(--moss) 0, var(--moss) 8px, transparent 8px, transparent 16px);
+  }
+  .step { text-align: center; position: relative; }
+  .step-num {
+    width: 56px; height: 56px; border-radius: 50%;
+    background: var(--cream); border: 2px solid var(--moss);
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Playfair Display', serif; font-size: 1.3rem; font-weight: 700;
+    color: var(--moss); margin: 0 auto 1.2rem; position: relative; z-index: 1;
+  }
+  .step-title { font-family: 'Playfair Display', serif; font-size: 1.1rem; font-weight: 700; margin-bottom: 0.6rem; color: var(--deep); }
+  .step-desc { font-size: 0.85rem; color: var(--muted); line-height: 1.6; }
+
+  /* ── TESTIMONIALS ── */
+  .testi-section { background: var(--sand); }
+  .testi-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; }
+  .testi-card { background: white; border-radius: 1.2rem; padding: 2rem; }
+  .stars { color: var(--gold); font-size: 0.9rem; margin-bottom: 1rem; letter-spacing: 2px; }
+  .testi-text { font-size: 0.95rem; line-height: 1.7; color: var(--deep); margin-bottom: 1.5rem; font-style: italic; }
+  .testi-author { display: flex; align-items: center; gap: 12px; }
+  .author-avatar {
+    width: 40px; height: 40px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 500; font-size: 0.85rem; color: white; flex-shrink: 0;
+  }
+  .av1 { background: var(--moss); }
+  .av2 { background: var(--terracotta); }
+  .av3 { background: #4A7B8E; }
+  .author-name { font-weight: 500; font-size: 0.9rem; }
+  .author-loc { font-size: 0.78rem; color: var(--muted); }
+
+  /* ── BOOKING ── */
+  .booking-section {
+    background: var(--moss);
+    color: white;
+    text-align: center;
+    padding: 5rem 4rem;
+  }
+  .booking-section .section-title { color: white; margin-bottom: 1rem; }
+  .booking-desc { color: rgba(255,255,255,0.7); font-size: 1.05rem; margin-bottom: 3rem; max-width: 500px; margin-left: auto; margin-right: auto; }
+  .booking-form {
+    background: white;
+    border-radius: 1.2rem;
+    padding: 2rem;
+    max-width: 700px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 1rem;
+    align-items: end;
+  }
+  .form-group label {
+    display: block;
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+    color: var(--muted);
+    margin-bottom: 0.4rem;
+    text-transform: uppercase;
+    text-align: left;
+  }
+  .form-group select,
+  .form-group input {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: 1.5px solid rgba(26,43,47,0.12);
+    border-radius: 0.6rem;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.9rem;
+    color: var(--deep);
+    outline: none;
+    transition: border-color 0.2s;
+    background: white;
+  }
+  .form-group select:focus,
+  .form-group input:focus { border-color: var(--moss); }
+  .search-btn {
+    background: var(--deep);
+    color: white;
+    border: none;
+    padding: 0.9rem 1.5rem;
+    border-radius: 0.6rem;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background 0.2s;
+  }
+  .search-btn:hover { background: var(--terracotta); }
+  #result { margin-top: 0.5rem; font-size: 0.9rem; font-weight: 500; }
+
+  /* ── FOOTER ── */
+  footer {
+    background: var(--deep);
+    color: rgba(255,255,255,0.6);
+    padding: 3.5rem 4rem 2rem;
+  }
+  .footer-top {
+    display: grid;
+    grid-template-columns: 1.8fr 1fr 1fr 1fr;
+    gap: 3rem;
+    margin-bottom: 3rem;
+    padding-bottom: 3rem;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+  }
+  .footer-brand .logo { color: white; margin-bottom: 1rem; display: block; }
+  .footer-brand p { font-size: 0.88rem; line-height: 1.7; }
+  .footer-col h4 {
+    color: white; font-size: 0.85rem; font-weight: 500;
+    letter-spacing: 0.5px; margin-bottom: 1.2rem; text-transform: uppercase;
+  }
+  .footer-col ul { list-style: none; }
+  .footer-col li { margin-bottom: 0.7rem; }
+  .footer-col a { color: rgba(255,255,255,0.5); text-decoration: none; font-size: 0.88rem; transition: color 0.2s; }
+  .footer-col a:hover { color: white; }
+  .footer-bottom { display: flex; justify-content: space-between; align-items: center; font-size: 0.82rem; flex-wrap: wrap; gap: 1rem; }
+  .footer-bottom a { color: rgba(255,255,255,0.4); text-decoration: none; }
+
+  /* ── ANIMATIONS ── */
+  @keyframes slideUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .hero-left > * { animation: slideUp 0.7s ease both; }
+  .hero-tag { animation-delay: 0.1s; }
+  .hero h1 { animation-delay: 0.2s; }
+  .hero-desc { animation-delay: 0.3s; }
+  .hero-btns { animation-delay: 0.4s; }
+  .hero-stats { animation-delay: 0.5s; }
+
+  /* ═══════════════════════════════════════
+     RESPONSIVE — TABLET  (≤ 1024px)
+  ═══════════════════════════════════════ */
+  @media (max-width: 1024px) {
+    nav { padding: 1rem 2rem; }
+    .nav-assoc { display: none; }
+    .section { padding: 5rem 2.5rem; }
+    .hero-left { padding: 4rem 2.5rem; }
+
+    .destinations-grid { grid-template-columns: 1fr 1fr; }
+    .dest-card.tall { grid-row: span 1; }
+    .dest-1 { min-height: 280px; }
+    .dest-2, .dest-3 { min-height: 220px; }
+
+    .packages-grid { grid-template-columns: 1fr 1fr; }
+
+    .steps-grid { grid-template-columns: 1fr 1fr; gap: 2.5rem; }
+    .steps-grid::before { display: none; }
+
+    .testi-grid { grid-template-columns: 1fr 1fr; }
+
+    .footer-top { grid-template-columns: 1fr 1fr; gap: 2rem; }
+  }
+
+  /* ═══════════════════════════════════════
+     RESPONSIVE — MOBILE  (≤ 768px)
+  ═══════════════════════════════════════ */
+  @media (max-width: 768px) {
+
+    /* Nav */
+    nav {
+      padding: 1rem 1.25rem;
+      justify-content: space-between;
+    }
+    .nav-assoc { display: none; }
+    nav ul { display: none; }
+    .nav-hamburger { display: flex; }
+
+    /* Hero — stack vertically */
+    .hero {
+      grid-template-columns: 1fr;
+      min-height: auto;
+      padding-top: 70px;
+    }
+    .hero-left {
+      padding: 3rem 1.25rem 2.5rem;
+      order: 1;
+    }
+    .hero h1 { font-size: clamp(2rem, 8vw, 3rem); }
+    .hero-desc { font-size: 0.95rem; max-width: 100%; }
+    .hero-btns { gap: 0.75rem; }
+    .btn-primary { padding: 0.8rem 1.6rem; font-size: 0.9rem; }
+    .hero-stats { gap: 1.5rem; margin-top: 2rem; padding-top: 2rem; }
+    .stat-num { font-size: 1.6rem; }
+
+    /* Hero illustration strip */
+    .hero-right {
+      order: 0;
+      min-height: 220px;
+      max-height: 260px;
+    }
+    .hero-right svg.hero-map { min-height: 220px; }
+    .floating-car svg { width: 210px; height: auto; }
+
+    /* Sections */
+    .section { padding: 3.5rem 1.25rem; }
+    .section-header {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+    .section-title { font-size: 1.75rem; }
+
+    /* Destinations */
+    .destinations-grid {
+      grid-template-columns: 1fr;
+      gap: 1rem;
+    }
+    .dest-card.tall { grid-row: auto; }
+    .dest-1 { min-height: 240px; }
+    .dest-2, .dest-3 { min-height: 200px; }
+    .dest-scenery { font-size: 5rem; }
+
+    /* Fleet */
+    .packages-grid { grid-template-columns: 1fr; gap: 1rem; }
+    .packages-section { padding: 3.5rem 1.25rem; }
+    .packages-section .section-header { flex-direction: column; align-items: flex-start; }
+
+    /* How it works */
+    .steps-grid {
+      grid-template-columns: 1fr;
+      gap: 2rem;
+    }
+    .step { display: flex; align-items: flex-start; gap: 1.2rem; text-align: left; }
+    .step-num { margin: 0; flex-shrink: 0; width: 48px; height: 48px; font-size: 1.1rem; }
+
+    /* Testimonials */
+    .testi-grid { grid-template-columns: 1fr; gap: 1rem; }
+    .testi-section { padding: 3.5rem 1.25rem; }
+
+    /* Booking section */
+    .booking-section { padding: 3.5rem 1.25rem; }
+    .booking-desc { font-size: 0.95rem; }
+
+    /* Booking layout — stack form + price */
+    .booking-layout {
+      grid-template-columns: 1fr !important;
+      gap: 1.25rem !important;
+    }
+    .booking-form { grid-template-columns: 1fr; padding: 1.5rem; }
+    #price-box { position: static !important; }
+
+    /* Footer */
+    footer { padding: 2.5rem 1.25rem 1.5rem; }
+    .footer-top {
+      grid-template-columns: 1fr;
+      gap: 2rem;
+    }
+    .footer-bottom {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0.75rem;
+    }
+    .footer-links { display: flex; gap: 1rem; flex-wrap: wrap; }
+  }
+
+  /* ═══════════════════════════════════════
+     RESPONSIVE — SMALL MOBILE  (≤ 400px)
+  ═══════════════════════════════════════ */
+  @media (max-width: 400px) {
+    .hero h1 { font-size: 1.85rem; }
+    .hero-btns { flex-direction: column; align-items: flex-start; }
+    .btn-primary { width: 100%; text-align: center; }
+    .hero-stats { gap: 1rem; }
+    .stat-num { font-size: 1.4rem; }
+    .pkg-card { padding: 1.5rem; }
+    .booking-section { padding: 2.5rem 1rem; }
+    .booking-form { padding: 1.25rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <span class="logo">Zest<span>Go</span></span>
+  <p class="nav-assoc">In Association with Gupta Tour &amp; Travel</p>
+  <ul>
+    <li><a href="#destinations">Destinations</a></li>
+    <li><a href="#fleet">Our Fleet</a></li>
+    <li><a href="#how">How It Works</a></li>
+    <li><a href="#reviews">Reviews</a></li>
+    <li><a href="#book" class="nav-cta">Book Now</a></li>
+  </ul>
+  <button class="nav-hamburger" id="hamburger" aria-label="Open menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<!-- MOBILE MENU DRAWER -->
+<div class="mobile-menu" id="mobileMenu">
+  <a href="#destinations" class="m-link">Destinations</a>
+  <a href="#fleet" class="m-link">Our Fleet</a>
+  <a href="#how" class="m-link">How It Works</a>
+  <a href="#reviews" class="m-link">Reviews</a>
+  <a href="#book" class="m-cta m-link">Book Now</a>
+</div>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-left">
+    <div class="hero-tag">Short Distance · Big Memories</div>
+    <h1>Explore <em>nearby</em><br>wonders with ease</h1>
+    <p class="hero-desc">Day trips, weekend escapes, and short getaways planned for you. No long flights, no fuss — just the joy of discovering what's close to home.</p>
+    <div class="hero-btns">
+      <a href="#destinations" class="btn-primary">Browse Destinations</a>
+      <a href="#how" class="btn-outline">How it works</a>
+    </div>
+    <div class="hero-stats">
+      <div>
+        <div class="stat-num">240+</div>
+        <div class="stat-label">Curated Routes</div>
+      </div>
+      <div>
+        <div class="stat-num">15K+</div>
+        <div class="stat-label">Happy Travellers</div>
+      </div>
+      <div>
+        <div class="stat-num">98%</div>
+        <div class="stat-label">Satisfaction Rate</div>
+      </div>
+    </div>
+  </div>
+  <div class="hero-right">
+    <svg class="hero-map" viewBox="0 0 600 700" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
+      <circle cx="100" cy="150" r="80" fill="#3D6B4F" opacity="0.3"/>
+      <circle cx="400" cy="100" r="50" fill="#C4573A" opacity="0.2"/>
+      <circle cx="300" cy="400" r="120" fill="#3D6B4F" opacity="0.2"/>
+      <circle cx="500" cy="500" r="70" fill="#D4A843" opacity="0.2"/>
+      <line x1="100" y1="150" x2="400" y2="100" stroke="#1A2B2F" stroke-width="1.5" stroke-dasharray="6,6"/>
+      <line x1="400" y1="100" x2="300" y2="400" stroke="#1A2B2F" stroke-width="1.5" stroke-dasharray="6,6"/>
+      <line x1="300" y1="400" x2="500" y2="500" stroke="#1A2B2F" stroke-width="1.5" stroke-dasharray="6,6"/>
+      <circle cx="100" cy="150" r="8" fill="#3D6B4F"/>
+      <circle cx="400" cy="100" r="8" fill="#C4573A"/>
+      <circle cx="300" cy="400" r="8" fill="#3D6B4F"/>
+      <circle cx="500" cy="500" r="8" fill="#D4A843"/>
+    </svg>
+    <div class="map-overlay">
+      <div class="floating-car">
+        <svg viewBox="0 0 320 160" xmlns="http://www.w3.org/2000/svg" width="300" height="150">
+          <ellipse cx="160" cy="148" rx="110" ry="8" fill="rgba(26,43,47,0.18)"/>
+          <rect x="30" y="88" width="260" height="46" rx="10" fill="#3D6B4F"/>
+          <path d="M78 88 Q93 50 118 46 L202 46 Q227 50 242 88 Z" fill="#2D5040"/>
+          <path d="M178 50 Q204 54 230 86 L178 86 Z" fill="#A8D5BE" opacity="0.65"/>
+          <path d="M142 50 Q116 54 90 86 L142 86 Z" fill="#A8D5BE" opacity="0.65"/>
+          <rect x="149" y="48" width="4" height="38" rx="2" fill="#1A2B2F" opacity="0.35"/>
+          <rect x="242" y="96" width="48" height="20" rx="6" fill="#345E44"/>
+          <rect x="30" y="96" width="44" height="20" rx="6" fill="#345E44"/>
+          <rect x="272" y="99" width="16" height="11" rx="3" fill="#FFF9E6" opacity="0.95"/>
+          <rect x="32" y="99" width="14" height="11" rx="3" fill="#C4573A" opacity="0.9"/>
+          <rect x="183" y="108" width="20" height="5" rx="2.5" fill="rgba(255,255,255,0.28)"/>
+          <rect x="117" y="108" width="20" height="5" rx="2.5" fill="rgba(255,255,255,0.28)"/>
+          <circle cx="85" cy="134" r="22" fill="#1A2B2F"/>
+          <circle cx="85" cy="134" r="13" fill="#2C3E35"/>
+          <circle cx="85" cy="134" r="6" fill="#F5EFE0"/>
+          <line x1="85" y1="121" x2="85" y2="147" stroke="#F5EFE0" stroke-width="1.8" opacity="0.4"/>
+          <line x1="72" y1="134" x2="98" y2="134" stroke="#F5EFE0" stroke-width="1.8" opacity="0.4"/>
+          <circle cx="235" cy="134" r="22" fill="#1A2B2F"/>
+          <circle cx="235" cy="134" r="13" fill="#2C3E35"/>
+          <circle cx="235" cy="134" r="6" fill="#F5EFE0"/>
+          <line x1="235" y1="121" x2="235" y2="147" stroke="#F5EFE0" stroke-width="1.8" opacity="0.4"/>
+          <line x1="222" y1="134" x2="248" y2="134" stroke="#F5EFE0" stroke-width="1.8" opacity="0.4"/>
+          <rect x="112" y="45" width="96" height="4" rx="2" fill="rgba(255,255,255,0.18)"/>
+          <circle cx="160" cy="113" r="9" fill="rgba(255,255,255,0.12)" stroke="rgba(255,255,255,0.28)" stroke-width="1"/>
+          <text x="160" y="117" text-anchor="middle" font-family="serif" font-size="10" font-weight="bold" fill="white" opacity="0.75">S</text>
+        </svg>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- DESTINATIONS -->
+<section class="section" id="destinations">
+  <div class="section-header">
+    <div>
+      <div class="section-label">Explore</div>
+      <div class="section-title">Popular<br>destinations</div>
+    </div>
+    <a href="#" class="section-link">View all routes →</a>
+  </div>
+  <div class="destinations-grid">
+    <div class="dest-card tall">
+      <div class="dest-bg dest-1">
+        <div class="dest-scenery">🏔</div>
+        <div class="dest-info">
+          <div class="dest-name">Rajgir Valley</div>
+          <div class="dest-dist">95 km · 2h drive</div>
+          <span class="dest-badge">Hot Springs &amp; Hills</span>
+        </div>
+      </div>
+    </div>
+    <div class="dest-card">
+      <div class="dest-bg dest-2">
+        <div class="dest-scenery">🌿</div>
+        <div class="dest-info">
+          <div class="dest-name">Kakolat Falls</div>
+          <div class="dest-dist">55 km · 1.5h drive</div>
+          <span class="dest-badge">Waterfalls &amp; Forest</span>
+        </div>
+      </div>
+    </div>
+    <div class="dest-card">
+      <div class="dest-bg dest-3">
+        <div class="dest-scenery">🏯</div>
+        <div class="dest-info">
+          <div class="dest-name">Rohtas Fort</div>
+          <div class="dest-dist">80 km · 2h drive</div>
+          <span class="dest-badge">Heritage &amp; History</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- VEHICLE FLEET -->
+<section class="section packages-section" id="fleet">
+  <div class="section-header">
+    <div>
+      <div class="section-label">Our Fleet</div>
+      <div class="section-title">Choose your<br>ride</div>
+    </div>
+  </div>
+  <div class="packages-grid" style="grid-template-columns: 1fr 1fr; max-width: 760px; margin: 0 auto;">
+
+    <div class="pkg-card">
+      <div class="vehicle-svg">
+        <svg viewBox="0 0 120 60" xmlns="http://www.w3.org/2000/svg" width="100" height="50">
+          <rect x="10" y="22" width="80" height="24" rx="5" fill="rgba(255,255,255,0.15)" stroke="rgba(255,255,255,0.3)" stroke-width="1.5"/>
+          <rect x="20" y="12" width="50" height="20" rx="4" fill="rgba(255,255,255,0.1)" stroke="rgba(255,255,255,0.25)" stroke-width="1.5"/>
+          <line x1="42" y1="12" x2="42" y2="32" stroke="rgba(255,255,255,0.2)" stroke-width="1"/>
+          <circle cx="28" cy="46" r="7" fill="none" stroke="rgba(255,255,255,0.5)" stroke-width="2"/>
+          <circle cx="28" cy="46" r="3" fill="rgba(255,255,255,0.3)"/>
+          <circle cx="72" cy="46" r="7" fill="none" stroke="rgba(255,255,255,0.5)" stroke-width="2"/>
+          <circle cx="72" cy="46" r="3" fill="rgba(255,255,255,0.3)"/>
+        </svg>
+      </div>
+      <div class="pkg-name">Sedan</div>
+      <div class="pkg-desc">Comfortable and fuel-efficient for couples or small families on short trips.</div>
+      <ul class="pkg-features">
+        <li>4 passengers</li>
+        <li>AC · Music system</li>
+        <li>Swift Dzire / Honda Amaze</li>
+        <li>Experienced driver</li>
+      </ul>
+      <div class="pkg-price">₹12 <span>/ km</span></div>
+      <a href="#book" class="pkg-btn">Book Sedan</a>
+    </div>
+
+    <div class="pkg-card featured">
+      <div class="vehicle-svg">
+        <svg viewBox="0 0 130 65" xmlns="http://www.w3.org/2000/svg" width="110" height="55">
+          <rect x="5" y="20" width="105" height="28" rx="5" fill="rgba(255,255,255,0.2)" stroke="rgba(255,255,255,0.4)" stroke-width="1.5"/>
+          <rect x="15" y="8" width="65" height="22" rx="4" fill="rgba(255,255,255,0.15)" stroke="rgba(255,255,255,0.3)" stroke-width="1.5"/>
+          <line x1="47" y1="8" x2="47" y2="30" stroke="rgba(255,255,255,0.25)" stroke-width="1"/>
+          <circle cx="28" cy="48" r="8" fill="none" stroke="rgba(255,255,255,0.6)" stroke-width="2"/>
+          <circle cx="28" cy="48" r="3.5" fill="rgba(255,255,255,0.35)"/>
+          <circle cx="90" cy="48" r="8" fill="none" stroke="rgba(255,255,255,0.6)" stroke-width="2"/>
+          <circle cx="90" cy="48" r="3.5" fill="rgba(255,255,255,0.35)"/>
+        </svg>
+      </div>
+      <div style="position:absolute;top:1.2rem;right:1.2rem;background:rgba(255,255,255,0.2);color:white;font-size:0.72rem;padding:0.25rem 0.7rem;border-radius:2rem;font-weight:500">Most Booked</div>
+      <div class="pkg-name">SUV / Innova</div>
+      <div class="pkg-desc">Spacious and smooth — the go-to for families and group outings.</div>
+      <ul class="pkg-features">
+        <li>6–7 passengers</li>
+        <li>AC · Luggage space</li>
+        <li>Innova / Ertiga / Marazzo</li>
+        <li>Professional driver</li>
+      </ul>
+      <div class="pkg-price">₹18 <span>/ km</span></div>
+      <a href="#book" class="pkg-btn">Book SUV</a>
+    </div>
+
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="section" id="how">
+  <div class="section-header" style="justify-content: center; text-align: center; display: block; margin-bottom: 3.5rem;">
+    <div class="section-label" style="text-align:center">Simple Process</div>
+    <div class="section-title">Plan your trip in<br>four easy steps</div>
+  </div>
+  <div class="steps-grid">
+    <div class="step">
+      <div class="step-num">1</div>
+      <div>
+        <div class="step-title">Pick a Destination</div>
+        <div class="step-desc">Browse our curated list of nearby spots and choose where you'd like to go.</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div>
+        <div class="step-title">Choose a Vehicle</div>
+        <div class="step-desc">Select from our fleet — Sedan or SUV — based on group size.</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <div>
+        <div class="step-title">Book &amp; Pay</div>
+        <div class="step-desc">Confirm your booking securely. Instant confirmation sent to your phone.</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">4</div>
+      <div>
+        <div class="step-title">Travel &amp; Enjoy</div>
+        <div class="step-desc">Our driver picks you up from your door. Sit back, relax, and enjoy the ride.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section class="section testi-section" id="reviews">
+  <div class="section-header">
+    <div>
+      <div class="section-label">Real Experiences</div>
+      <div class="section-title">What our travellers<br>are saying</div>
+    </div>
+  </div>
+  <div class="testi-grid">
+    <div class="testi-card">
+      <div class="stars">★★★★★</div>
+      <div class="testi-text">"We did the Rajgir weekend package and it was absolutely wonderful. The cab was on time, the hotel was lovely, and the guide was so knowledgeable. Will book again!"</div>
+      <div class="testi-author">
+        <div class="author-avatar av1">PR</div>
+        <div>
+          <div class="author-name">Priya Raj</div>
+          <div class="author-loc">Begusarai, Bihar</div>
+        </div>
+      </div>
+    </div>
+    <div class="testi-card">
+      <div class="stars">★★★★★</div>
+      <div class="testi-text">"Organized a family trip of 18 people to Kakolat Falls. Everything was perfectly arranged — meals, transport, even the picnic spot. Great value for money!"</div>
+      <div class="testi-author">
+        <div class="author-avatar av2">AM</div>
+        <div>
+          <div class="author-name">Anil Mishra</div>
+          <div class="author-loc">Begusarai, Bihar</div>
+        </div>
+      </div>
+    </div>
+    <div class="testi-card">
+      <div class="stars">★★★★☆</div>
+      <div class="testi-text">"Quick day trip to Rohtas Fort on a whim. Booked the night before and they sorted everything. The driver was courteous and the fort was breathtaking. Highly recommended."</div>
+      <div class="testi-author">
+        <div class="author-avatar av3">SK</div>
+        <div>
+          <div class="author-name">Sunita Kumar</div>
+          <div class="author-loc">Begusarai, Bihar</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- BOOKING CTA -->
+<section class="booking-section" id="book">
+  <div class="section-label" style="color: var(--sand); margin-bottom: 0.6rem;">Book Now</div>
+  <div class="section-title">Ready to hit the road?</div>
+  <div class="booking-desc">Fill in the details and get an instant fare estimate.</div>
+
+  <div class="booking-layout" style="max-width: 860px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; align-items: start;">
+
+    <!-- BOOKING FORM -->
+    <form action="#" id="telegramForm">
+      <div class="booking-form" style="grid-template-columns: 1fr; gap: 1rem;">
+        <div class="form-group">
+          <label>From</label>
+          <select id="bk-from" onchange="onFromChange()">
+            <option value="Begusarai" selected>Begusarai</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Destination</label>
+          <select id="bk-dest" name="destination" onchange="onDestChange()">
+            <option value="Samastipur">Samastipur</option>
+            <option value="Khagaria">Khagaria</option>
+            <option value="Bhagalpur">Bhagalpur</option>
+            <option value="Muzaffarpur">Muzaffarpur</option>
+            <option value="Patna">Patna</option>
+            <option value="Other">Other destination...</option>
+          </select>
+        </div>
+
+        <!-- Custom destination fields -->
+        <div id="custom-dest-group" style="display:none;">
+          <div class="form-group" style="margin-bottom:0.8rem;">
+            <label>Destination Name</label>
+            <input name="destination" type="text" id="bk-custom-dest" placeholder="e.g. Darbhanga" oninput="calcPrice()">
+          </div>
+          <div class="form-group">
+            <label>Distance from Begusarai (km)</label>
+            <input type="number" id="bk-custom-km" min="1" placeholder="e.g. 75" oninput="calcPrice()">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Vehicle</label>
+          <select id="bk-vehicle" onchange="calcPrice()">
+            <option value="sedan">Sedan (4 seats)</option>
+            <option value="suv">7-Seater SUV</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Trip Type</label>
+          <select id="bk-type" onchange="calcPrice()">
+            <option value="oneway">One Way</option>
+            <option value="roundtrip">Round Trip</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Travel Date</label>
+          <input type="date" id="bk-date">
+        </div>
+        <div class="form-group">
+          <label>Your Phone</label>
+          <input type="tel" id="bk-phone" placeholder="+91 XXXXX XXXXX">
+        </div>
+        <button id="submitBtn" type="submit" class="search-btn" style="width:100%; padding: 1rem; margin-top: 0.25rem; border-radius: 0.6rem;">Confirm Booking →</button>
+        <div id="result"></div>
+      </div>
+    </form>
+
+    <!-- PRICE CALCULATOR BOX -->
+    <div id="price-box" style="background: white; border-radius: 1.2rem; padding: 2rem; color: var(--deep); text-align: left; position: sticky; top: 100px;">
+      <div style="font-size: 0.72rem; letter-spacing: 2px; text-transform: uppercase; color: var(--terracotta); font-weight: 600; margin-bottom: 1.2rem;">Fare Estimate</div>
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 1.5rem; padding-bottom: 1.5rem; border-bottom: 1px solid rgba(26,43,47,0.08);">
+        <div>
+          <div id="route-label" style="font-family:'Playfair Display',serif; font-size:1.05rem; font-weight:700; color:var(--deep); margin-bottom:4px;">Begusarai → Samastipur</div>
+          <div id="dist-label" style="font-size:0.82rem; color:var(--muted);">Fixed fare · One Way</div>
+        </div>
+        <div id="vehicle-icon" style="font-size:2rem;">🚗</div>
+      </div>
+
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.8rem; margin-bottom:1.5rem;">
+        <div style="background:#F5EFE0; border-radius:0.8rem; padding:0.9rem 1rem;">
+          <div style="font-size:0.72rem; color:var(--muted); margin-bottom:4px; text-transform:uppercase; letter-spacing:0.5px;">Distance</div>
+          <div id="calc-dist" style="font-family:'Playfair Display',serif; font-size:1.2rem; font-weight:700; color:var(--deep);">—</div>
+        </div>
+        <div style="background:#F5EFE0; border-radius:0.8rem; padding:0.9rem 1rem;">
+          <div style="font-size:0.72rem; color:var(--muted); margin-bottom:4px; text-transform:uppercase; letter-spacing:0.5px;">Rate</div>
+          <div id="calc-rate" style="font-family:'Playfair Display',serif; font-size:1.2rem; font-weight:700; color:var(--deep);">Fixed</div>
+        </div>
+        <div style="background:#F5EFE0; border-radius:0.8rem; padding:0.9rem 1rem;">
+          <div style="font-size:0.72rem; color:var(--muted); margin-bottom:4px; text-transform:uppercase; letter-spacing:0.5px;">Trip Type</div>
+          <div id="calc-type" style="font-family:'Playfair Display',serif; font-size:1.2rem; font-weight:700; color:var(--deep);">One Way</div>
+        </div>
+        <div style="background:#F5EFE0; border-radius:0.8rem; padding:0.9rem 1rem;">
+          <div style="font-size:0.72rem; color:var(--muted); margin-bottom:4px; text-transform:uppercase; letter-spacing:0.5px;">Toll</div>
+          <div id="calc-toll" style="font-family:'Playfair Display',serif; font-size:1.2rem; font-weight:700; color:var(--deep);">Not Included</div>
+        </div>
+      </div>
+
+      <div style="background: var(--moss); border-radius: 0.9rem; padding: 1.2rem 1.5rem; display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
+        <div style="color:rgba(255,255,255,0.8); font-size:0.88rem; font-weight:500;">Total Estimated Fare</div>
+        <div id="calc-total" style="font-family:'Playfair Display',serif; font-size:2rem; font-weight:700; color:white;">₹2,200</div>
+      </div>
+
+      <div id="calc-note" style="font-size:0.75rem; color:var(--muted); line-height:1.6;">
+        * Fixed route fare. Final price confirmed on call.
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-top">
+    <div class="footer-brand">
+      <span class="logo">Zest<span style="color:var(--moss)">Go</span></span>
+      <p>Your trusted partner for short distance tours across Bihar and neighbouring regions. Safe, comfortable, and unforgettable journeys.</p>
+    </div>
+    <div class="footer-col">
+      <h4>Destinations</h4>
+      <ul>
+        <li><a href="#">Rajgir Valley</a></li>
+        <li><a href="#">Kakolat Falls</a></li>
+        <li><a href="#">Rohtas Fort</a></li>
+        <li><a href="#">Bodh Gaya</a></li>
+        <li><a href="#">Vaishali</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Our Fleet</h4>
+      <ul>
+        <li><a href="#">Sedan (4 seats)</a></li>
+        <li><a href="#">SUV / Innova (6–7 seats)</a></li>
+        <li><a href="#">Corporate Booking</a></li>
+        <li><a href="#">Custom Group Trip</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Contact</h4>
+      <ul>
+        <li><a href="tel:+919430066739">+91 94300 66739</a></li>
+        <li><a href="tel:+918825378611">+91 88253 78611</a></li>
+        <li><a href="mailto:hello@swiftroutes.in">hello@swiftroutes.in</a></li>
+        <li><a href="#">Binodpur Near Township,<br>Begusarai, Bihar 851134</a></li>
+        <li><a href="#">WhatsApp Us</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2026 Gupta Tour &amp; Travel. All rights reserved.</span>
+    <div class="footer-links" style="display:flex;gap:1.5rem">
+      <a href="#">Privacy Policy</a>
+      <a href="#">Terms</a>
+      <a href="#">Refund Policy</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+/* ── HAMBURGER MENU ── */
+const hamburger = document.getElementById('hamburger');
+const mobileMenu = document.getElementById('mobileMenu');
+const mLinks = document.querySelectorAll('.m-link');
+
+hamburger.addEventListener('click', () => {
+  hamburger.classList.toggle('open');
+  mobileMenu.classList.toggle('open');
+  document.body.style.overflow = mobileMenu.classList.contains('open') ? 'hidden' : '';
+});
+mLinks.forEach(link => {
+  link.addEventListener('click', () => {
+    hamburger.classList.remove('open');
+    mobileMenu.classList.remove('open');
+    document.body.style.overflow = '';
+  });
+});
+
+/* ── FLEET GRID: stack on mobile ── */
+function fixFleetGrid() {
+  const grid = document.querySelector('.packages-grid');
+  if (!grid) return;
+  if (window.innerWidth <= 768) {
+    grid.style.gridTemplateColumns = '1fr';
+    grid.style.maxWidth = '100%';
+  } else {
+    grid.style.gridTemplateColumns = '1fr 1fr';
+    grid.style.maxWidth = '760px';
+  }
+}
+fixFleetGrid();
+window.addEventListener('resize', fixFleetGrid);
+
+/* ── HOW IT WORKS: control dashed line on desktop ── */
+function fixStepsLine() {
+  const before = document.querySelector('.steps-grid');
+  if (!before) return;
+  if (window.innerWidth <= 768) {
+    before.style.setProperty('--show-line', 'none');
+  }
+}
+fixStepsLine();
+
+/* ── BOOKING FORM (Telegram) ── */
+const BOT_TOKEN = "8675529325:AAG911miDjgnjHPwCytbZASQM7ZIfHO3PsQ";
+const CHAT_ID   = "-1003679076188";
+
+document.getElementById("telegramForm").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const submitBtn = document.getElementById("submitBtn");
+  const resultDiv = document.getElementById("result");
+  const phone = document.getElementById('bk-phone').value.trim();
+  const date  = document.getElementById('bk-date').value;
+
+  if (!phone || !date) {
+    alert('Please fill in your phone number and travel date.');
+    return;
+  }
+
+  submitBtn.disabled = true;
+  submitBtn.textContent = "Processing...";
+  resultDiv.style.display = "block";
+  resultDiv.innerHTML = "Sending your request...";
+
+  try {
+    const fromLoc   = document.getElementById('bk-from').value;
+    const vehicle   = document.getElementById('bk-vehicle').value;
+    const tripType  = document.getElementById('bk-type').value;
+    const totalFare = document.getElementById('calc-total').textContent;
+    let destination = document.getElementById('bk-dest').value;
+    if (destination === 'Other') destination = document.getElementById('bk-custom-dest').value || "Other";
+
+    const msg = `<b>🚖 New Booking Request</b>
+──────────────────
+<b>👤 Phone:</b> ${phone}
+<b>📅 Date:</b> ${date}
+<b>📍 Route:</b> ${fromLoc} to ${destination}
+<b>🚗 Vehicle:</b> ${vehicle.toUpperCase()}
+<b>🔁 Type:</b> ${tripType}
+<b>💰 Est. Fare:</b> ${totalFare}
+──────────────────
+<i>Sent from ZestGo Website</i>`.trim();
+
+    const resp = await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ chat_id: CHAT_ID, text: msg, parse_mode: "HTML" })
+    });
+    const result = await resp.json();
+    if (result.ok) {
+      resultDiv.style.color = "#3D6B4F";
+      resultDiv.innerHTML = "✅ Booking request sent! We will call you shortly.";
+      e.target.reset();
+      calcPrice();
+    } else {
+      throw new Error(result.description || "Failed to send");
+    }
+  } catch (err) {
+    resultDiv.style.color = "#C4573A";
+    resultDiv.innerHTML = `❌ Error: ${err.message}`;
+  } finally {
+    submitBtn.disabled = false;
+    submitBtn.textContent = "Confirm Booking →";
+  }
+});
+
+/* ── PRICE CALCULATOR ── */
+const routes = {
+  'Samastipur':  { dist: 71.9,  sedan: { oneway: 2200, roundtrip: null }, suv: { oneway: 2400, roundtrip: null }, fixedOnly: true },
+  'Khagaria':    { dist: 45.2,  sedan: { oneway: 1800, roundtrip: null }, suv: { oneway: 2000, roundtrip: null }, fixedOnly: true },
+  'Bhagalpur':   { dist: 111,   sedan: { oneway: 3500, roundtrip: null }, suv: { oneway: 4000, roundtrip: null }, fixedOnly: true },
+  'Muzaffarpur': { dist: 114,   sedan: { oneway: 3300, roundtrip: null }, suv: { oneway: 3800, roundtrip: null }, fixedOnly: true },
+  'Patna':       { dist: 122,   sedan: { oneway: 2800, roundtrip: 3800  }, suv: { oneway: 3200, roundtrip: 4500 }, fixedOnly: false }
+};
+const perKmRates = { sedan: 13, suv: 15 };
+
+function onFromChange() { calcPrice(); }
+
+function onDestChange() {
+  const dest = document.getElementById('bk-dest').value;
+  const customGroup = document.getElementById('custom-dest-group');
+  const typeSelect  = document.getElementById('bk-type');
+  const typeGroup   = typeSelect.closest('.form-group');
+
+  if (dest === 'Other') {
+    customGroup.style.display = 'block';
+    typeGroup.style.display = 'block';
+    typeSelect.disabled = false;
+    typeSelect.innerHTML = '<option value="oneway">One Way</option><option value="roundtrip">Round Trip</option>';
+  } else if (dest === 'Patna') {
+    customGroup.style.display = 'none';
+    typeGroup.style.display = 'block';
+    typeSelect.disabled = false;
+    typeSelect.innerHTML = '<option value="oneway">One Way</option><option value="roundtrip">Round Trip</option>';
+  } else {
+    customGroup.style.display = 'none';
+    typeGroup.style.display = 'block';
+    typeSelect.disabled = true;
+    typeSelect.innerHTML = '<option value="oneway">Round trip (Fixed Fare)</option>';
+  }
+  calcPrice();
+}
+
+function calcPrice() {
+  const dest     = document.getElementById('bk-dest').value;
+  const vehicle  = document.getElementById('bk-vehicle').value;
+  const tripType = document.getElementById('bk-type').value;
+  const icon     = vehicle === 'sedan' ? '🚗' : '🚙';
+  const typeLabel = tripType === 'oneway' ? 'One Way' : 'Round Trip';
+
+  document.getElementById('vehicle-icon').textContent = icon;
+  document.getElementById('calc-type').textContent    = typeLabel;
+
+  if (dest === 'Other') {
+    const customDest = document.getElementById('bk-custom-dest').value.trim() || 'Custom Destination';
+    const km   = parseFloat(document.getElementById('bk-custom-km').value) || 0;
+    const rate = perKmRates[vehicle];
+    const totalKm = tripType === 'roundtrip' ? (km * 2).toFixed(1) : km;
+    const fare = Math.round(parseFloat(totalKm) * rate);
+
+    document.getElementById('route-label').textContent = 'Begusarai → ' + customDest;
+    document.getElementById('dist-label').textContent  = totalKm + ' km · ' + typeLabel + ' · Toll extra';
+    document.getElementById('calc-dist').textContent   = km ? totalKm + ' km' : '—';
+    document.getElementById('calc-rate').textContent   = '₹' + rate + '/km';
+    document.getElementById('calc-toll').textContent   = 'Extra';
+    document.getElementById('calc-total').textContent  = km ? '₹' + fare.toLocaleString('en-IN') + ' + Toll' : '—';
+    document.getElementById('calc-note').textContent   = '* Calculated at ₹' + rate + '/km. Toll charges extra. Final price confirmed on call.';
+    return;
+  }
+
+  const r = routes[dest];
+  let fare, rateLabel, tollLabel, noteText, distDisplay;
+
+  if (dest === 'Patna') {
+    fare        = r[vehicle][tripType];
+    rateLabel   = 'Fixed';
+    tollLabel   = 'Included';
+    distDisplay = r.dist + ' km';
+    noteText    = '* Fixed fare for ' + typeLabel.toLowerCase() + ', toll included. Final confirmed on call.';
+  } else {
+    fare        = r[vehicle].oneway;
+    rateLabel   = 'Fixed';
+    tollLabel   = 'Not Included';
+    distDisplay = r.dist + ' km';
+    noteText    = '* Fixed one-way fare, toll not included. For return trip call us for best rate.';
+  }
+
+  document.getElementById('route-label').textContent = 'Begusarai → ' + dest;
+  document.getElementById('dist-label').textContent  = distDisplay + ' · ' + typeLabel;
+  document.getElementById('calc-dist').textContent   = distDisplay;
+  document.getElementById('calc-rate').textContent   = rateLabel;
+  document.getElementById('calc-toll').textContent   = tollLabel;
+  document.getElementById('calc-total').textContent  = '₹' + fare.toLocaleString('en-IN');
+  document.getElementById('calc-note').textContent   = noteText;
+}
+
+calcPrice();
+</script>
+</body>
+</html>
